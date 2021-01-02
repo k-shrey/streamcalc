@@ -1,42 +1,42 @@
-package dequeue
+package utils
 
 import (
-	// "fmt"
+	"log"
+	"os"
 	"sync"
 )
 
-type Dequeue struct {
+type Deque struct {
 	sync.RWMutex
 	container []float32
-	capacity int
+	capacity  int
 }
 
-func newDequeue(cap int) *Dequeue {
-	return &Dequeue{
+func init() {
+	log.SetOutput(os.Stdout)
+}
+
+func NewDeque(cap int) *Deque {
+	return &Deque{
 		capacity: cap,
 	}
 }
-func (dq *Dequeue) Empty() bool {
+
+func (dq *Deque) Empty() bool {
 	dq.RLock()
 	defer dq.RUnlock()
 
-	if len(dq.container) == 0 {
-		return true
-	}
-	return false
+	return len(dq.container) == 0
 }
 
-func (dq *Dequeue) Full() bool {
+func (dq *Deque) Full() bool {
 	dq.RLock()
 	defer dq.RUnlock()
 
-	if len(dq.container) == dq.capacity {
-		return true
-	}
-	return false
+	return len(dq.container) == dq.capacity
 }
 
-func (dq *Dequeue) PushBack(val float32) bool {
+func (dq *Deque) PushBack(val float32) bool {
 	dq.Lock()
 	defer dq.Unlock()
 
@@ -45,6 +45,7 @@ func (dq *Dequeue) PushBack(val float32) bool {
 		return true
 	}
 
+	log.Println("Failed to pushback ", val)
 	return false
 }
 
@@ -57,7 +58,7 @@ func prependValue(list []float32, val float32) []float32 {
 	return list
 }
 
-func (dq *Dequeue) PushFront(val float32) bool {
+func (dq *Deque) PushFront(val float32) bool {
 	dq.Lock()
 	defer dq.Unlock()
 
@@ -65,11 +66,13 @@ func (dq *Dequeue) PushFront(val float32) bool {
 		dq.container = prependValue(dq.container, val)
 		return true
 	}
+
+	log.Println("Failed to pushfront ", val)
 	return false
 }
 
-// using interface{}, need to be able to return nil on failure
-func (dq *Dequeue) PopFront() interface{} {
+// need to return nil on failure
+func (dq *Deque) PopFront() interface{} {
 	dq.Lock()
 	defer dq.Unlock()
 
@@ -79,29 +82,28 @@ func (dq *Dequeue) PopFront() interface{} {
 		return val
 	}
 
+	log.Println("Failed to popfront ")
 	return nil
 }
 
-func (dq *Dequeue) PopBack() interface{} {
+// need to return nil on failure
+func (dq *Deque) PopBack() interface{} {
 	dq.Lock()
 	defer dq.Unlock()
 
 	if dq.capacity > 0 && dq.capacity > len(dq.container) {
 		val := dq.container[0]
-		dq.container = dq.container[:len(dq.container) - 1]
+		dq.container = dq.container[:len(dq.container)-1]
 		return val
 	}
 
+	log.Println("Failed to popback ")
 	return nil
 }
 
-func (dq *Dequeue) Capacity() int {
+func (dq *Deque) Capacity() int {
 	dq.RLock()
 	defer dq.RUnlock()
 
 	return dq.capacity
 }
-
-
-
-
