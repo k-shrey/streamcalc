@@ -2,29 +2,24 @@ package main
 
 import (
 	"log"
-
-	"tridentsk/streamcalc/utils"
+	"time"
+	// "tridentsk/streamcalc/utils"
+	"net/http"
+	"github.com/gorilla/mux"
 )
 
 func main() {
 
-	pq := utils.NewPQueue(-1, "max")
+    r := mux.NewRouter()
+	r.HandleFunc("/value", StoreValue).Methods("POST")
 
-	pq.Push(6)
-	// log.Println(pq)
-	pq.Push(5)
-	// log.Println(pq)
-	pq.Push(2)
-	// log.Println(pq)
-	pq.Push(1)
-	// log.Println(pq)
-	pq.Push(5)
-	// log.Println(pq)
-	pq.Push(4)
-	// log.Println(pq)
+    srv := &http.Server{
+        Handler:      r,
+        Addr:         "127.0.0.1:8000",
+        // Good practice: enforce timeouts for servers you create!
+        WriteTimeout: 15 * time.Second,
+        ReadTimeout:  15 * time.Second,
+    }
 
-
-	for i := 0; i < 6; i++ {
-		log.Println(pq.Pop())
-	}
+    log.Fatal(srv.ListenAndServe())
 }
