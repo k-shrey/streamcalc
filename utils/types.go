@@ -2,20 +2,21 @@ package utils
 
 import (
 	"sync"
-	// . "tridentsk/streamcalc/utils"
 )
 
+// Expected data format
 type Tick struct {
 	Instrument string  `json:"instrument"`
 	Price      float32 `json:"price"`
 	Timestamp  int64   `json:"timestamp"`
 }
 
+// contains map[string]InstrumentData
 type TickCache struct {
-	// one queue for each instrument, map[string][]Tick
 	sync.Map
 }
 
+// Holds data and statistics for an instrument
 type InstrumentData struct {
 	sync.RWMutex
 	Data    Queue
@@ -24,6 +25,7 @@ type InstrumentData struct {
 	Average float32
 }
 
+// expected json response for stats request
 type Statistics struct {
 	Average float32 `json:"avg"`
 	Min     float32 `json:"min"`
@@ -31,14 +33,9 @@ type Statistics struct {
 	Count   int     `json:"count"`
 }
 
-// type Average struct {
-// 	sync.Map
-// }
-
-// type Min struct {
-// 	sync.Map
-// }
-
-// type Max struct {
-// 	sync.Map
-// }
+func ZeroIfEmpty(tick interface{}) float32 {
+	if val, ok := tick.(*Tick); ok {
+		return val.Price
+	}
+	return 0
+}

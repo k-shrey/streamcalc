@@ -2,10 +2,8 @@ package main
 
 import (
 	"log"
-	"time"
-
-	// "tridentsk/streamcalc/utils"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -13,15 +11,16 @@ import (
 func main() {
 
 	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/value", StoreValueHandler).Methods("POST")
-	r.HandleFunc("/stats/{instrument}", GetStatsHandler).Methods("POST")
+	r.HandleFunc("/value", TickHandler).Methods("POST")
+	r.HandleFunc("/stats/{instrument}", GetStatsHandler).Methods("GET")
+
 	srv := &http.Server{
-		Handler: r,
-		Addr:    "127.0.0.1:8000",
-		// Good practice: enforce timeouts for servers you create!
+		Handler:      r,
+		Addr:         "127.0.0.1:8000",
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}
 
+	log.Println("Listening on: ", srv.Addr)
 	log.Fatal(srv.ListenAndServe())
 }
