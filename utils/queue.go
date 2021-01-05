@@ -9,22 +9,22 @@ type Queue struct {
 	*Deque
 }
 
-func newQueue(cap int) *Queue {
-	return &Queue{
+func NewQueue(cap int) Queue {
+	return Queue{
 		Deque: NewDeque(cap),
 	}
 }
 
-func (q *Queue) Enqueue(val float32) bool {
+func (q *Queue) Enqueue(val interface{}) bool {
 	q.Lock()
 	defer q.Unlock()
 
 	return q.PushBack(val)
 }
 
-func (q *Queue) Dequeue(val float32) interface{} {
+func (q *Queue) Dequeue(val interface{}) interface{} {
 	q.Lock()
 	defer q.Unlock()
 
-	return q.PopBack()
+	return q.PopFront()
 }
