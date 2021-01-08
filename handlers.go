@@ -29,7 +29,7 @@ func TickHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	all, _ := tc.Load("All")
+	all, _ := tc.Load("ALL")
 	ins, _ := tc.Load(t.Instrument)
 
 	if ins == nil {
@@ -50,8 +50,8 @@ func TickHandler(w http.ResponseWriter, r *http.Request) {
 			MaxQ:    NewQueue(-1),
 			Average: 0,
 		}
-		tc.Store("All", all)
-		go TidyWatcher("All")
+		tc.Store("ALL", all)
+		go TidyWatcher("ALL")
 	}
 
 	var allData *InstrumentData = all.(*InstrumentData)

@@ -11,7 +11,7 @@ import (
 func main() {
 
 	r := mux.NewRouter().StrictSlash(true)
-	r.HandleFunc("/value", TickHandler).Methods("POST")
+	r.HandleFunc("/tick", TickHandler).Methods("POST")
 	r.HandleFunc("/stats/{instrument}", GetStatsHandler).Methods("GET")
 
 	srv := &http.Server{
