@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"time"
 	. "tridentsk/streamcalc/utils"
-
 	"github.com/gorilla/mux"
 )
 
@@ -127,7 +126,7 @@ func TidyWatcher(insName string) {
 	for range time.Tick(time.Millisecond * 250) {
 		ins.Lock()
 		for ins.Data.Size() > 0 &&
-			ins.Data.Front().(*Tick).Timestamp < (time.Now().Unix()-20) {
+			ins.Data.Front().(*Tick).Timestamp < (time.Now().Unix()-60) {
 
 			value, ok := ins.Data.PopFront().(*Tick)
 
